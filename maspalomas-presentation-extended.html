@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maspalomas - Dein Guide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        /* Navigation Sidebar */
+        .nav-sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 220px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            padding: 25px 15px;
+            z-index: 100;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            overflow-y: auto;
+        }
+        
+        .nav-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #ff6b35;
+            margin-bottom: 20px;
+            font-weight: 600;
+            padding-left: 10px;
+        }
+        
+        .nav-item {
+            padding: 10px 12px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255,107,53,0.1);
+            color: #fff;
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .nav-icon {
+            font-size: 1rem;
+        }
+        
+        /* Slide Counter */
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: rgba(255,255,255,0.5);
+            z-index: 100;
+        }
+        
+        .slide-counter span {
+            color: #ff6b35;
+            font-weight: 700;
+        }
+        
+        /* Slides Container */
+        .slides-container {
+            margin-left: 220px;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 60px;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: all;
+        }
+        
+        /* Background Images */
+        .slide-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .slide-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.25;
+            filter: blur(2px);
+        }
+        
+        .slide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10,10,10,0.85) 0%, rgba(26,26,46,0.75) 100%);
+            z-index: -1;
+        }
+        
+        /* Image Gallery */
+        .image-gallery {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            max-width: 100%;
+            justify-content: center;
+        }
+        
+        .gallery-img {
+            width: 260px;
+            height: 160px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 3px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-img:hover {
+            transform: scale(1.05);
+            border-color: #ff6b35;
+        }
+        
+        .gallery-img-large {
+            width: 350px;
+            height: 200px;
+        }
+        
+        .gallery-img-small {
+            width: 180px;
+            height: 120px;
+        }
+        
+        /* Typography */
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffcc00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            text-shadow: 0 0 60px rgba(255,107,53,0.3);
+        }
+        
+        h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 25px;
+            text-align: center;
+            max-width: 700px;
+        }
+        
+        /* Grid Layouts */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        /* Cards */
+        .card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 18px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,107,53,0.3);
+            box-shadow: 0 15px 40px rgba(255,107,53,0.15);
+        }
+        
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #ff6b35;
+        }
+        
+        .card-text {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.4;
+        }
+        
+        .card-tag {
+            display: inline-block;
+            background: rgba(255,107,53,0.2);
+            color: #ff6b35;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            margin-top: 10px;
+        }
+        
+        /* Big Numbers */
+        .big-number {
+            font-size: 6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff6b35 0%, #ffcc00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            text-shadow: 0 0 80px rgba(255,107,53,0.4);
+        }
+        
+        .big-number-small {
+            font-size: 4rem;
+        }
+        
+        .number-label {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 8px;
+        }
+        
+        .number-container {
+            text-align: center;
+        }
+        
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 35px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .stat-item {
+            text-align: center;
+            background: rgba(255,255,255,0.05);
+            padding: 15px 25px;
+            border-radius: 12px;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff6b35;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 3px;
+        }
+        
+        /* Price Tags */
+        .price-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+        
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.03);
+            padding: 12px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #ff6b35;
+        }
+        
+        .price-name {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .price-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ff6b35;
+        }
+        
+        /* Feature List */
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            max-width: 800px;
+        }
+        
+        .feature-tag {
+            background: linear-gradient(135deg, rgba(255,107,53,0.2) 0%, rgba(247,147,30,0.2) 100%);
+            border: 1px solid rgba(255,107,53,0.3);
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* Activity Grid */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 650px;
+        }
+        
+        .activity-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .activity-item:hover {
+            background: rgba(255,107,53,0.15);
+            transform: scale(1.05);
+        }
+        
+        .activity-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+        
+        .activity-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .activity-price {
+            font-size: 1rem;
+            color: #ff6b35;
+            font-weight: 700;
+        }
+        
+        /* Club List */
+        .club-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-width: 850px;
+        }
+        
+        .club-item {
+            background: linear-gradient(145deg, rgba(147,51,234,0.2) 0%, rgba(79,70,229,0.2) 100%);
+            border: 1px solid rgba(147,51,234,0.3);
+            padding: 15px 12px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .club-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .club-genre {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Budget Bar */
+        .budget-bar {
+            width: 100%;
+            max-width: 600px;
+            height: 45px;
+            background: linear-gradient(90deg, #27ae60 0%, #f7931e 50%, #e74c3c 100%);
+            border-radius: 22px;
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        .budget-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 10px;
+        }
+        
+        .budget-label {
+            text-align: center;
+        }
+        
+        .budget-amount {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .budget-type {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Route Timeline */
+        .route-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .route-step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255,255,255,0.03);
+            padding: 12px 18px;
+            border-radius: 12px;
+            border-left: 4px solid #ff6b35;
+        }
+        
+        .route-step-number {
+            width: 30px;
+            height: 30px;
+            background: #ff6b35;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        
+        .route-step-content {
+            flex: 1;
+        }
+        
+        .route-step-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .route-step-detail {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Season Grid */
+        .season-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-width: 800px;
+        }
+        
+        .season-item {
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+        }
+        
+        .season-item.best {
+            background: rgba(39,174,96,0.2);
+            border: 1px solid rgba(39,174,96,0.4);
+        }
+        
+        .season-item.okay {
+            background: rgba(241,196,15,0.15);
+            border: 1px solid rgba(241,196,15,0.3);
+        }
+        
+        .season-item.avoid {
+            background: rgba(231,76,60,0.15);
+            border: 1px solid rgba(231,76,60,0.3);
+        }
+        
+        .season-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .season-temp {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ff6b35;
+        }
+        
+        .season-rating {
+            font-size: 0.75rem;
+            margin-top: 5px;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Keyboard hint */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 25px;
+            right: 35px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.8rem;
+            z-index: 100;
+        }
+        
+        .key {
+            background: rgba(255,255,255,0.1);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        
+        /* Decorative Elements */
+        .glow-circle {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,107,53,0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
+        .top-right { top: -80px; right: -80px; }
+        .bottom-left { bottom: -80px; left: -80px; }
+        
+        /* Flora Fauna Grid */
+        .flora-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 800px;
+        }
+        
+        .flora-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+        }
+        
+        .flora-card.fauna {
+            border-left-color: #3498db;
+        }
+        
+        .flora-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .flora-list {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Sidebar -->
+    <nav class="nav-sidebar">
+        <div class="nav-title">Kapitel</div>
+        <div class="nav-item active" data-slide="0">
+            <span class="nav-icon">🗺️</span> Überblick
+        </div>
+        <div class="nav-item" data-slide="1">
+            <span class="nav-icon">🏜️</span> Dünen
+        </div>
+        <div class="nav-item" data-slide="2">
+            <span class="nav-icon">🗼</span> Leuchtturm
+        </div>
+        <div class="nav-item" data-slide="3">
+            <span class="nav-icon">🐬</span> Palmitos Park
+        </div>
+        <div class="nav-item" data-slide="4">
+            <span class="nav-icon">🏄</span> Wassersport
+        </div>
+        <div class="nav-item" data-slide="5">
+            <span class="nav-icon">🍽️</span> Gastronomie
+        </div>
+        <div class="nav-item" data-slide="6">
+            <span class="nav-icon">🎉</span> Nachtleben
+        </div>
+        <div class="nav-item" data-slide="7">
+            <span class="nav-icon">⛵</span> Puerto de Mogán
+        </div>
+        <div class="nav-item" data-slide="8">
+            <span class="nav-icon">🥾</span> Pilancones Wanderung
+        </div>
+        <div class="nav-item" data-slide="9">
+            <span class="nav-icon">🌲</span> Flora & Fauna
+        </div>
+        <div class="nav-item" data-slide="10">
+            <span class="nav-icon">💡</span> Tipps & Budget
+        </div>
+    </nav>
+    
+    <!-- Slide Counter -->
+    <div class="slide-counter">
+        <span id="current">1</span>/11
+    </div>
+    
+    <!-- Slides Container -->
+    <div class="slides-container">
+        
+        <!-- Slide 1: Überblick -->
+        <div class="slide active" data-chapter="0">
+            <div class="slide-bg">
+                <img src="https://media.istockphoto.com/id/901324006/photo/aerial-view-of-playa-del-ingles-maspalomas-gran-canaria-spain.jpg?s=612x612&w=is&k=20&c=OWkNgm0nZd4EhLCbIturtnxul06OGmbUTm5xUu32XlY=" alt="Maspalomas Aerial">
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="glow-circle top-right"></div>
+            
+            <h1>Maspalomas</h1>
+            <p class="subtitle">4 einzigartige Bereiche – ein Erlebnis</p>
+            
+            <div class="image-gallery">
+                <img class="gallery-img" src="https://www.jet2holidays.com/villas/-/media/destinations/poi/gran+canaria/meloneras/lpa0048_meloneras_promenade_0416_01.jpg" alt="Meloneras Promenade" onerror="this.style.display='none'">
+                <img class="gallery-img" src="https://villagrancanaria.com/cms/uploads/2018/06/gran-canaria-maspalomas-1762716_1920-1600-qfm73f.jpg" alt="Maspalomas Dünen" onerror="this.style.display='none'">
+                <img class="gallery-img" src="https://www.gran-canaria-info.com/media/k2/galleries/968/Meloneras_1_3.jpg" alt="Meloneras Beach" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="grid-4">
+                <div class="card">
+                    <div class="card-icon">🎉</div>
+                    <div class="card-title">Playa del Inglés</div>
+                    <div class="card-text">Lebhaft, günstig, Party & Action</div>
+                    <div class="card-tag">Nachtleben</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">✨</div>
+                    <div class="card-title">Meloneras</div>
+                    <div class="card-text">Elegant, gehobene Hotels & Restaurants</div>
+                    <div class="card-tag">Entspannung</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⛳</div>
+                    <div class="card-title">Campo Internacional</div>
+                    <div class="card-text">Grüne Flächen, Golfplatz, ruhig</div>
+                    <div class="card-tag">Familie</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🛒</div>
+                    <div class="card-title">San Fernando</div>
+                    <div class="card-text">Lokale Infrastruktur, Wochenmarkt</div>
+                    <div class="card-tag">Authentisch</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Dünen -->
+        <div class="slide" data-chapter="1">
+            <div class="slide-bg">
+                <img src="https://villagrancanaria.com/cms/uploads/2018/06/gran-canaria-maspalomas-1762716_1920-1600-qfm73f.jpg" alt="Dünen">
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="glow-circle bottom-left"></div>
+            
+            <h2>Dünen von Maspalomas</h2>
+            <p class="subtitle">Das ikonische Wahrzeichen – Sand aus der Sahara</p>
+            
+            <div class="image-gallery">
+                <img class="gallery-img gallery-img-large" src="https://www.hellocanaryislands.com/sites/default/files/styles/colorbox_image/public/resources/resource_image/PH8226.jpg?itok=e0bLaiSy" alt="Dünen Maspalomas" onerror="this.style.display='none'">
+                <img class="gallery-img gallery-img-large" src="https://lesglobeblogueurs.com/wp-content/uploads/2025/04/grande-canarie-3920.jpg" alt="Dünen Landschaft" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="feature-list">
+                <div class="feature-tag">🐫 Kamelritt</div>
+                <div class="feature-tag">📸 Fotospots</div>
+                <div class="feature-tag">🦅 Vogelbeobachtung</div>
+                <div class="feature-tag">🚶 Wanderung zum Leuchtturm</div>
+                <div class="feature-tag">🆓 Kostenlos</div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Leuchtturm -->
+        <div class="slide" data-chapter="2">
+            <div class="slide-bg">
+                <img src="https://villagrancanaria.com/cms/uploads/webp/shutterstock_638521291-1600-r98x43.webp" alt="Leuchtturm">
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="glow-circle top-right"></div>
+            
+            <div class="image-gallery">
+                <img class="gallery-img gallery-img-large" src="https://www.jet2holidays.com/villas/-/media/destinations/poi/gran+canaria/maspalomas/lpa0045_faro_lighthouse_1116_rfis_01.jpg?h=500&w=1920&crop=1" alt="Faro de Maspalomas" onerror="this.style.display='none'">
+                <img class="gallery-img gallery-img-large" src="https://villagrancanaria.com/cms/uploads/webp/shutterstock_638521291-1600-r98x43.webp" alt="Leuchtturm" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="number-container">
+                <div class="big-number">1889</div>
+                <div class="number-label">Erbaut – Faro de Maspalomas</div>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Etagen Museum</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10:30</div>
+                    <div class="stat-label">Öffnung täglich</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0€</div>
+                    <div class="stat-label">Eintritt</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Palmitos Park -->
+        <div class="slide" data-chapter="3">
+            <div class="slide-bg">
+                <img src="https://i.ytimg.com/vi/zmHXI4Ihr_A/maxresdefault.jpg" alt="Palmitos Park">
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="glow-circle bottom-left"></div>
+            
+            <div class="image-gallery">
+                <img class="gallery-img" src="https://i.ytimg.com/vi/i9jobCEAnNE/maxresdefault.jpg" alt="Palmitos Park Delfine" onerror="this.style.display='none'">
+                <img class="gallery-img" src="https://i.ytimg.com/vi/zmHXI4Ihr_A/maxresdefault.jpg" alt="Palmitos Park Show" onerror="this.style.display='none'">
+                <img class="gallery-img" src="https://i.ytimg.com/vi/cf7pKh7yiqc/maxresdefault.jpg" alt="Palmitos Park Vögel" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="number-container">
+                <div class="big-number">24</div>
+                <div class="number-label">Hektar Natur & Tierwelt</div>
+            </div>
+            
+            <div class="grid-3" style="margin-top: 20px;">
+                <div class="card">
+                    <div class="card-icon">🐬</div>
+                    <div class="card-title">Delfinarium</div>
+                    <div class="card-text">3.000 m² Shows</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🦜</div>
+                    <div class="card-title">Vogelshows</div>
+                    <div class="card-text">Raubvögel & Papageien</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🦋</div>
+                    <div class="card-title">Schmetterlingshaus</div>
+                    <div class="card-text">+ Kakteen & Orchideen</div>
+                </div>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-number">€35</div>
+                    <div class="stat-label">Erwachsene</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">€26</div>
+                    <div class="stat-label">Kinder 5-10</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2-4h</div>
+                    <div class="stat-label">Aufenthalt</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Wassersport -->
+        <div class="slide" data-chapter="4">
+            <div class="slide-bg">
+                <img src="https://www.lovegrancanariashop.com/wp-content/uploads/2024/07/Jet-Ski-Dunas-Maspalomas-1.jpg" alt="Wassersport">
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="glow-circle top-right"></div>
+            
+            <h2>Wassersport-Paradies</h2>
+            
+            <div class="image-gallery">
+                <img class="gallery-img" src="https://www.lovegrancanariashop.com/wp-content/uploads/2024/07/Jet-Ski-Dunas-Maspalomas-1.jpg" alt="Jetski" onerror="this.style.display='none'">
+                <img class="gallery-img" src="https://www.lovegrancanariashop.com/wp-content/uploads/2023/11/Parasailiing-Aquasport-feet-in-the-water.jpg" alt="Parasailing" onerror="this.style.display='none'">
+                <img class="gallery-img" src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/19/db/e5/b9/jet-ski-safari-to-maspalomas.jpg?w=1600&h=1100&s=1" alt="Jet Ski Safari" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="activity-grid">
+                <div class="activity-item">
+                    <div class="activity-icon">🚤</div>
+                    <div class="activity-name">Jetski</div>
+                    <div class="activity-price">ab €90</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🪂</div>
+                    <div class="activity-name">Parasailing</div>
+                    <div class="activity-price">ab €50</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🚣</div>
+                    <div class="activity-name">Kajak</div>
+                    <div class="activity-price">ab €60</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🐬</div>
+                    <div class="activity-name">Delfin-Tour</div>
+                    <div class="activity-price">4h + Tapas</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🤿</div>
+                    <div class="activity-name">Tauchen</div>
+                    <div class="activity-price">Tauchschulen</div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🏄</div>
+                    <div class="activity-name">Surfen</div>
+                    <div class="activity-price">Top Spots</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 6: Gastronomie -->
+        <div class="slide" data-chapter="5">
+            <div class="slide-bg">
+                <img src="https://www.hotel-palm-beach.com/sites/default/files/2020-02/76_PB_LaBodega_14.jpg" alt="Restaurant">
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="glow-circle bottom-left"></div>
+            
+            <h2>Kulinarische Vielfalt</h2>
+            
+            <div class="image-gallery">
+                <img class="gallery-img" src="https://www.hotel-palm-beach.com/sites/default/files/2020-02/76_PB_LaBodega_14.jpg" alt="Restaurant Tapas" onerror="this.style.display='none'">
+                <img class="gallery-img" src="https://www.grancanariaholidays.co.uk/wp-content/uploads/2023/02/la-cabanita-park-restaurant-maspalomas-tapas-1024x768.jpg" alt="Canarian Food" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="grid-2">
+                <div>
+                    <h3 style="color: #ff6b35; margin-bottom: 15px; font-size: 1.1rem;">🌟 Gehobene Küche</h3>
+                    <div class="price-list">
+                        <div class="price-item">
+                            <span class="price-name">Mana 264</span>
+                            <span class="price-value">Premium Tapas</span>
+                        </div>
+                        <div class="price-item">
+                            <span class="price-name">Las Brasas</span>
+                            <span class="price-value">Steakhouse</span>
+                        </div>
+                        <div class="price-item">
+                            <span class="price-name">Café del Mar</span>
+                            <span class="price-value">Sonnenuntergang</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: #27ae60; margin-bottom: 15px; font-size: 1.1rem;">💰 Budget-freundlich</h3>
+                    <div class="price-list">
+                        <div class="price-item" style="border-color: #27ae60;">
+                            <span class="price-name">Wochenmarkt</span>
+                            <span class="price-value" style="color: #27ae60;">Mi & Sa</span>
+                        </div>
+                        <div class="price-item" style="border-color: #27ae60;">
+                            <span class="price-name">El Chacho</span>
+                            <span class="price-value" style="color: #27ae60;">Mexikanisch</span>
+                        </div>
+                        <div class="price-item" style="border-color: #27ae60;">
+                            <span class="price-name">Good Vibes</span>
+                            <span class="price-value" style="color: #27ae60;">Vegan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 7: Nachtleben -->
+        <div class="slide" data-chapter="6">
+            <div class="slide-bg">
+                <img src="https://cdn.shopify.com/s/files/1/0728/8061/9845/files/progetto-senza-titolo-6.jpg?v=1741114952" alt="Nachtleben">
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="glow-circle top-right"></div>
+            
+            <div class="image-gallery">
+                <img class="gallery-img" src="https://cdn.shopify.com/s/files/1/0728/8061/9845/files/progetto-senza-titolo-6.jpg?v=1741114952" alt="Club" onerror="this.style.display='none'">
+                <img class="gallery-img" src="https://grancanariawhattodo.com/wp-content/uploads/2023/09/p89634-Best-Clubs-in-Playa-Del-InglC3A9s-c9e528872d-526648539.jpg" alt="Nightlife" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="number-container">
+                <div class="big-number">~100</div>
+                <div class="number-label">Bars, Clubs & Diskotheken</div>
+            </div>
+            
+            <div class="club-grid" style="margin-top: 25px;">
+                <div class="club-item">
+                    <div class="club-name">Pacha</div>
+                    <div class="club-genre">House • Dance</div>
+                </div>
+                <div class="club-item">
+                    <div class="club-name">Heaven</div>
+                    <div class="club-genre">Größter Gay-Club</div>
+                </div>
+                <div class="club-item">
+                    <div class="club-name">Joy Palace</div>
+                    <div class="club-genre">Hip Hop • Salsa</div>
+                </div>
+                <div class="club-item">
+                    <div class="club-name">Avalon</div>
+                    <div class="club-genre">House • Dance</div>
+                </div>
+            </div>
+            
+            <p style="margin-top: 20px; color: rgba(255,255,255,0.5); font-size: 0.9rem;">
+                📍 Yumbo Centre & Kasbah • Bis 6:00 Uhr morgens
+            </p>
+        </div>
+        
+        <!-- Slide 8: Puerto de Mogán -->
+        <div class="slide" data-chapter="7">
+            <div class="slide-bg">
+                <img src="https://www.cardenas-grancanaria.com/perch/resources/gallery/puerto-de-mogan-puerto-4-w800h600.jpg" alt="Puerto de Mogán">
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="glow-circle bottom-left"></div>
+            
+            <h1>Puerto de Mogán</h1>
+            <p class="subtitle">"Klein-Venedig" – 45 Minuten westlich</p>
+            
+            <div class="image-gallery">
+                <img class="gallery-img gallery-img-large" src="https://www.cardenas-grancanaria.com/perch/resources/gallery/puerto-de-mogan-puerto-4-w800h600.jpg" alt="Puerto de Mogán Hafen" onerror="this.style.display='none'">
+                <img class="gallery-img gallery-img-large" src="https://st2.depositphotos.com/2767614/10563/i/950/depositphotos_105631582-stock-photo-port-in-puerto-de-mogan.jpg" alt="Puerto de Mogán Dorf" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="grid-3" style="margin-top: 15px;">
+                <div class="card">
+                    <div class="card-icon">🏘️</div>
+                    <div class="card-title">Altstadt</div>
+                    <div class="card-text">Bunte Häuser, Kanäle</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🛥️</div>
+                    <div class="card-title">Hafen</div>
+                    <div class="card-text">Yachthafen, U-Boot-Touren</div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🛍️</div>
+                    <div class="card-title">Markt</div>
+                    <div class="card-text">Freitags – Kunsthandwerk</div>
+                </div>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-number">€33</div>
+                    <div class="stat-label">Bootstour Erw.</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">€22</div>
+                    <div class="stat-label">Kinder</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 9: Pilancones Wanderung - ERWEITERT -->
+        <div class="slide" data-chapter="8">
+            <div class="slide-bg">
+                <img src="https://peakvisor.com/img/news/Pilancones-Natural-Park-forest.jpg" alt="Pilancones">
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="glow-circle top-right"></div>
+            
+            <h1>Pilancones Rundweg</h1>
+            <p class="subtitle">Die schönste Wanderung im Süden Gran Canarias</p>
+            
+            <div class="image-gallery">
+                <img class="gallery-img" src="https://thumbs.dreamstime.com/z/church-san-bartolome-de-tirajana-village-gran-canaria-canary-islands-spain-214692365.jpg" alt="San Bartolomé" onerror="this.style.display='none'">
+                <img class="gallery-img" src="https://c8.alamy.com/comp/ENGW5N/gran-canaria-hiking-route-cruz-grande-llanos-de-la-pez-steep-footpath-ENGW5N.jpg" alt="Wanderweg" onerror="this.style.display='none'">
+                <img class="gallery-img" src="https://peakvisor.com/img/news/Pilancones-Natural-Park-forest.jpg" alt="Kiefernwald" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="stats-row" style="margin-top: 15px; margin-bottom: 20px;">
+                <div class="stat-item">
+                    <div class="stat-number">12,5</div>
+                    <div class="stat-label">Kilometer</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4-6h</div>
+                    <div class="stat-label">Gehzeit</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500m</div>
+                    <div class="stat-label">Höhenmeter</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">1.249m</div>
+                    <div class="stat-label">Cruz Grande</div>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="route-timeline">
+                    <div class="route-step">
+                        <div class="route-step-number">1</div>
+                        <div class="route-step-content">
+                            <div class="route-step-title">San Bartolomé → Manzanilla</div>
+                            <div class="route-step-detail">4-5 km • Aufstieg durch Serpentinen</div>
+                        </div>
+                    </div>
+                    <div class="route-step">
+                        <div class="route-step-number">2</div>
+                        <div class="route-step-content">
+                            <div class="route-step-title">Kiefernwald-Flanke</div>
+                            <div class="route-step-detail">3-4 km • Am Morro de las Vacas</div>
+                        </div>
+                    </div>
+                    <div class="route-step">
+                        <div class="route-step-number">3</div>
+                        <div class="route-step-content">
+                            <div class="route-step-title">Gipfel Cruz Grande</div>
+                            <div class="route-step-detail">1.249m • Caldera-Panorama</div>
+                        </div>
+                    </div>
+                    <div class="route-step">
+                        <div class="route-step-number">4</div>
+                        <div class="route-step-content">
+                            <div class="route-step-title">Camino Real Abstieg</div>
+                            <div class="route-step-detail">2,5 km • Historischer Pflasterweg</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="card" style="margin-bottom: 12px;">
+                        <div class="card-title">🚌 Anfahrt</div>
+                        <div class="card-text">Bus 18 ab Faro de Maspalomas<br>Bus 34 ab Playa del Inglés</div>
+                    </div>
+                    <div class="card" style="margin-bottom: 12px;">
+                        <div class="card-title">⚡ Schwierigkeit</div>
+                        <div class="card-text">MITTEL – Gut ausgebaute Wege<br>Für ambitionierte Anfänger geeignet</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">📍 Start/Ziel</div>
+                        <div class="card-text">Iglesia San Bartolomé (887m)<br>Rundwanderung – gleicher Ort</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 10: Pilancones Flora & Fauna + Jahreszeit -->
+        <div class="slide" data-chapter="9">
+            <div class="slide-bg">
+                <img src="https://c8.alamy.com/comp/2SBHR38/forest-of-canary-island-pine-pinus-canariensis-integral-natural-reserve-of-inagua-gran-canaria-canary-islands-spain-2SBHR38.jpg" alt="Kiefernwald">
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="glow-circle bottom-left"></div>
+            
+            <h2>Flora, Fauna & Beste Zeit</h2>
+            
+            <div class="image-gallery">
+                <img class="gallery-img" src="https://c8.alamy.com/comp/2SBHR38/forest-of-canary-island-pine-pinus-canariensis-integral-natural-reserve-of-inagua-gran-canaria-canary-islands-spain-2SBHR38.jpg" alt="Kanarienkiefer" onerror="this.style.display='none'">
+                <img class="gallery-img" src="https://c8.alamy.com/comp/2T7HYP7/forest-of-canary-island-pine-pinus-canariensis-the-nublo-rural-park-tejeda-gran-canaria-canary-islands-spain-2T7HYP7.jpg" alt="Kiefernwald" onerror="this.style.display='none'">
+                <img class="gallery-img" src="https://c8.alamy.com/comp/M8DX7P/gran-canaria-march-2018-las-cumbres-view-towards-cruz-grande-from-M8DX7P.jpg" alt="Cruz Grande" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="grid-2" style="margin-top: 15px;">
+                <div class="flora-grid" style="display: flex; flex-direction: column; gap: 12px;">
+                    <div class="flora-card">
+                        <div class="flora-title">🌲 Kanarienkiefer</div>
+                        <div class="flora-list">
+                            <strong>Pinus canariensis</strong> – Endemisch<br>
+                            • Extrem feuerfest (regeneriert nach Bränden)<br>
+                            • Bis 30m hoch, lange Nadelbüschel
+                        </div>
+                    </div>
+                    <div class="flora-card fauna">
+                        <div class="flora-title">🐦 56 Vogelarten</div>
+                        <div class="flora-list">
+                            • <strong>Gran Canaria-Blaufink</strong> (Endemit)<br>
+                            • Kanarischer Buntspecht<br>
+                            • Rotkehlchen, Habicht
+                        </div>
+                    </div>
+                    <div class="flora-card fauna">
+                        <div class="flora-title">🐿️ Säugetiere</div>
+                        <div class="flora-list">
+                            • Eichhörnchen (häufig zu sehen!)<br>
+                            • Gran Canaria-Skink, Eidechsen
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: #ff6b35; margin-bottom: 15px; font-size: 1rem; text-align: center;">🗓️ Beste Wanderzeit</h3>
+                    <div class="season-grid" style="grid-template-columns: repeat(2, 1fr);">
+                        <div class="season-item best">
+                            <div class="season-name">Frühjahr</div>
+                            <div class="season-temp">22-23°C</div>
+                            <div class="season-rating">⭐⭐⭐⭐⭐ Ideal</div>
+                        </div>
+                        <div class="season-item best">
+                            <div class="season-name">Herbst</div>
+                            <div class="season-temp">25-27°C</div>
+                            <div class="season-rating">⭐⭐⭐⭐⭐ Ideal</div>
+                        </div>
+                        <div class="season-item okay">
+                            <div class="season-name">Winter</div>
+                            <div class="season-temp">20-22°C</div>
+                            <div class="season-rating">⭐⭐⭐ Okay</div>
+                        </div>
+                        <div class="season-item avoid">
+                            <div class="season-name">Sommer</div>
+                            <div class="season-temp">25-29°C</div>
+                            <div class="season-rating">❌ Zu heiß</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="margin-top: 15px;">
+                        <div class="card-title">🎒 Mitbringen</div>
+                        <div class="card-text">
+                            1,5-2L Wasser • Wanderschuhe<br>
+                            Sonnencreme SPF 50+ • Snacks<br>
+                            Wind-/Regenjacke • GPS offline
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 11: Praktische Tipps -->
+        <div class="slide" data-chapter="10">
+            <div class="slide-bg">
+                <img src="https://www.jet2holidays.com/villas/-/media/destinations/poi/gran+canaria/meloneras/lpa0048_meloneras_promenade_0416_01.jpg" alt="Gran Canaria">
+            </div>
+            <div class="slide-overlay"></div>
+            <div class="glow-circle bottom-left"></div>
+            
+            <h2>Tagesbudget</h2>
+            
+            <div class="image-gallery">
+                <img class="gallery-img" src="https://www.gran-canaria-info.com/media/k2/galleries/968/Meloneras_1_3.jpg" alt="Meloneras" onerror="this.style.display='none'">
+                <img class="gallery-img" src="https://www.jet2holidays.com/-/media/destinations/poi/gran+canaria/meloneras/lpa0046_playa_meloneras_0416_01.jpg" alt="Strand" onerror="this.style.display='none'">
+            </div>
+            
+            <div class="budget-bar"></div>
+            <div class="budget-labels">
+                <div class="budget-label">
+                    <div class="budget-amount" style="color: #27ae60;">€40-80</div>
+                    <div class="budget-type">Budget</div>
+                </div>
+                <div class="budget-label">
+                    <div class="budget-amount" style="color: #f7931e;">€80-150</div>
+                    <div class="budget-type">Mittel</div>
+                </div>
+                <div class="budget-label">
+                    <div class="budget-amount" style="color: #e74c3c;">€150+</div>
+                    <div class="budget-type">Gehoben</div>
+                </div>
+            </div>
+            
+            <div class="grid-3" style="margin-top: 30px;">
+                <div class="card" style="text-align: center;">
+                    <div class="card-icon">🚌</div>
+                    <div class="card-title">Global Bus</div>
+                    <div class="card-text">Günstig & zuverlässig</div>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div class="card-icon">☀️</div>
+                    <div class="card-title">Ganzjährig</div>
+                    <div class="card-text">Mild – Frühling optimal</div>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div class="card-icon">🚴</div>
+                    <div class="card-title">Fahrrad</div>
+                    <div class="card-text">Ab €4 für 4-7 Tage</div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Keyboard Hint -->
+    <div class="keyboard-hint">
+        <span class="key">←</span>
+        <span class="key">→</span>
+        <span>Navigation</span>
+        <span class="key" style="margin-left: 10px;">F</span>
+        <span>Fullscreen</span>
+    </div>
+    
+    <script>
+        // Slide management
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const navItems = document.querySelectorAll('.nav-item');
+        const totalSlides = slides.length;
+        
+        function updateSlide(index) {
+            if (index < 0) index = 0;
+            if (index >= totalSlides) index = totalSlides - 1;
+            
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) slide.classList.add('active');
+            });
+            
+            navItems.forEach((item, i) => {
+                item.classList.remove('active');
+                if (i === index) item.classList.add('active');
+            });
+            
+            document.getElementById('current').textContent = index + 1;
+            currentSlide = index;
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+                e.preventDefault();
+                updateSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                updateSlide(currentSlide - 1);
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                updateSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                updateSlide(totalSlides - 1);
+            } else if (e.key === 'f' || e.key === 'F') {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+        });
+        
+        // Navigation click
+        navItems.forEach((item, index) => {
+            item.addEventListener('click', () => updateSlide(index));
+        });
+        
+        // Touch/swipe support
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            const diff = touchStartX - e.changedTouches[0].screenX;
+            if (Math.abs(diff) > 50) {
+                updateSlide(currentSlide + (diff > 0 ? 1 : -1));
+            }
+        });
+        
+        // Fullscreen on double-click
+        document.addEventListener('dblclick', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>
