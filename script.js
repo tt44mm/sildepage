@@ -1,5 +1,5 @@
 // Storage key for localStorage
-const STORAGE_KEY = 'sildepage_urls';
+const STORAGE_KEY = 'slidepage_urls';
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
@@ -15,6 +15,8 @@ function setupEventListeners() {
     const shareEmail = document.getElementById('shareEmail');
     const shareTwitter = document.getElementById('shareTwitter');
     const shareFacebook = document.getElementById('shareFacebook');
+    const urlInput = document.getElementById('urlInput');
+    const titleInput = document.getElementById('titleInput');
 
     form.addEventListener('submit', handleFormSubmit);
     copyBtn.addEventListener('click', copyToClipboard);
@@ -22,6 +24,10 @@ function setupEventListeners() {
     shareEmail.addEventListener('click', shareViaEmail);
     shareTwitter.addEventListener('click', shareViaTwitter);
     shareFacebook.addEventListener('click', shareViaFacebook);
+    
+    // Clear errors on input
+    urlInput.addEventListener('input', () => clearError(urlInput));
+    titleInput.addEventListener('input', () => clearError(titleInput));
 }
 
 // Handle form submission
@@ -36,7 +42,7 @@ function handleFormSubmit(e) {
     
     // Validate URL
     if (!isValidUrl(url)) {
-        alert('Please enter a valid URL');
+        showError(urlInput, 'Please enter a valid URL');
         return;
     }
     
@@ -94,17 +100,58 @@ function displayPublicUrl(url, title) {
 // Copy URL to clipboard
 function copyToClipboard() {
     const url = document.getElementById('displayUrl').textContent;
-    navigator.clipboard.writeText(url).then(() => {
-        const btn = document.getElementById('copyBtn');
-        const originalText = btn.textContent;
-        btn.textContent = '✓ Copied!';
+    const btn = document.getElementById('copyBtn');
+    const originalText = btn.textContent;
+    
+    // Try modern clipboard API first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+            btn.textContent = '✓ Copied!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }).catch(err => {
+            console.error('Failed to copy:', err);
+            fallbackCopyToClipboard(url, btn, originalText);
+        });
+    } else {
+        // Fallback for older browsers
+        fallbackCopyToClipboard(url, btn, originalText);
+    }
+}
+
+// Fallback clipboard copy method
+function fallbackCopyToClipboard(text, btn, originalText) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            btn.textContent = '✓ Copied!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        } else {
+            btn.textContent = 'Copy failed';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+    } catch (err) {
+        console.error('Fallback: Failed to copy', err);
+        btn.textContent = 'Copy failed';
         setTimeout(() => {
             btn.textContent = originalText;
         }, 2000);
-    }).catch(err => {
-        console.error('Failed to copy:', err);
-        alert('Failed to copy URL');
-    });
+    }
+    
+    document.body.removeChild(textArea);
 }
 
 // Reset form
@@ -146,6 +193,38 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// Show inline error message
+function showError(inputElement, message) {
+    // Remove any existing error
+    clearError(inputElement);
+    
+    // Add error class to input
+    inputElement.classList.add('error');
+    
+    // Create error message element
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    
+    // Insert error message after input
+    inputElement.parentNode.appendChild(errorDiv);
+    
+    // Auto-remove error after 5 seconds
+    setTimeout(() => {
+        clearError(inputElement);
+    }, 5000);
+}
+
+// Clear error message
+function clearError(inputElement) {
+    inputElement.classList.remove('error');
+    const errorMsg = inputElement.parentNode.querySelector('.error-message');
+    if (errorMsg) {
+        errorMsg.remove();
+    }
+}
+
 
 // Share via Email
 function shareViaEmail() {

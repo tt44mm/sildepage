@@ -80,6 +80,26 @@ input[type="text"]:focus {
     border-color: #667eea;
 }
 
+input[type="url"].error,
+input[type="text"].error {
+    border-color: #e74c3c;
+    animation: shake 0.3s;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: block;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+
 .btn-primary,
 .btn-secondary,
 .btn-share {
