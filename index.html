@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlidePage - Make URLs Public</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔗 SlidePage</h1>
+            <p class="subtitle">Share your URLs publicly</p>
+        </header>
+        
+        <main>
+            <div class="form-section">
+                <h2>Make a URL Public</h2>
+                <form id="urlForm">
+                    <div class="input-group">
+                        <label for="urlInput">Enter URL:</label>
+                        <input 
+                            type="url" 
+                            id="urlInput" 
+                            name="urlInput" 
+                            placeholder="https://example.com/your-slide"
+                            required
+                        >
+                    </div>
+                    <div class="input-group">
+                        <label for="titleInput">Title (optional):</label>
+                        <input 
+                            type="text" 
+                            id="titleInput" 
+                            name="titleInput" 
+                            placeholder="My Presentation"
+                        >
+                    </div>
+                    <button type="submit" class="btn-primary">Make Public</button>
+                </form>
+            </div>
+
+            <div id="publicUrlSection" class="public-url-section" style="display: none;">
+                <h2>✅ Your URL is now public!</h2>
+                <div class="url-display">
+                    <div class="url-info">
+                        <p class="url-title" id="displayTitle"></p>
+                        <a href="#" id="displayUrl" target="_blank" rel="noopener noreferrer"></a>
+                    </div>
+                    <button id="copyBtn" class="btn-secondary">Copy URL</button>
+                </div>
+                <div class="share-options">
+                    <h3>Share via:</h3>
+                    <div class="share-buttons">
+                        <button id="shareEmail" class="btn-share">📧 Email</button>
+                        <button id="shareTwitter" class="btn-share">🐦 Twitter</button>
+                        <button id="shareFacebook" class="btn-share">📘 Facebook</button>
+                    </div>
+                </div>
+                <button id="newUrlBtn" class="btn-secondary">Make Another URL Public</button>
+            </div>
+
+            <div class="public-urls-list">
+                <h2>Public URLs</h2>
+                <div id="urlsList"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>SlidePage - Simple URL sharing for presentations and slides</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
